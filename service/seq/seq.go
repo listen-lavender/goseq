@@ -1,10 +1,12 @@
 package seq
 
 import (
+	"context"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/listen-lavender/goseq/api"
+	"github.com/listen-lavender/goseq/api/pbseq"
 	"github.com/listen-lavender/goseq/model"
 )
 
@@ -24,7 +26,25 @@ func NewSeqService(seqDao model.SeqDao, softSegmentDao model.SoftSegmentDao, sof
 }
 
 // 获取
-func (ss *SeqService) GetSeq(ctx *gin.Context) {
+func (ss *SeqService) GetSeq(ctx context.Context, req *pbseq.GetSeqReq) (*pbseq.GetSeqRes, error) {
+	regionID := ss.softRegionDao.GetSet(ctx, req.Namespace)
+	seq := ss.seqDao.AtomicInc(ctx, req.Namespace)
+	_, _, err := ss.softSegmentDao.CAS(ctx, regionID, seq)
+
+	var res *pbseq.GetSeqRes
+
+	if err == nil {
+		res = &pbseq.GetSeqRes{
+			Namespace: req.Namespace,
+			Seq:       seq,
+			Ts:        time.Now().Unix(),
+		}
+	}
+	return res, err
+}
+
+// http获取
+func (ss *SeqService) HttpGetSeq(ctx *gin.Context) {
 	req := &api.SeqReq{
 		NS: ctx.Param("ns"),
 	}

@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package seq;
+option go_package = "github.com/listen-lavender/goseq/api/pbseq;pbseq";
+import "google/api/annotations.proto";
+import "protoc-gen-swagger/options/annotations.proto";
+
+service SeqService {
+    rpc GetSeq(GetSeqReq) returns (GetSeqRes);
+}
+
+message GetSeqReq{
+    string namespace =1;
+}
+message GetSeqRes{
+    string namespace =1;
+	uint64 seq =2;
+    int64 ts =3;
+    uint32 error_code =4;
+    string msg =5;
+}

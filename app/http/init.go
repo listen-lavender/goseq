@@ -13,14 +13,11 @@ type HttpServer struct {
 
 func NewHttpServer(engine *gin.Engine,
 	seqService *seq.SeqService) *HttpServer {
+	engine.GET("/seq/independent/:ns/next", seqService.HttpGetSeq)
 	return &HttpServer{
 		engine:     engine,
 		seqService: seqService,
 	}
-}
-
-func (hs *HttpServer) Init() {
-	hs.engine.GET("/seq/independent/:ns/next", hs.seqService.GetSeq)
 }
 
 func (hs *HttpServer) Run(host string) {

@@ -12,8 +12,8 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestSeq_GetSeq(t *testing.T) {
-	Convey("TestGetSeq", t, func() {
+func TestSeq_HttpGetSeq(t *testing.T) {
+	Convey("TestHttpGetSeq", t, func() {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -55,6 +55,6 @@ func TestSeq_GetSeq(t *testing.T) {
 		)
 
 		ss := NewSeqService(mockSeqDao, mockSegmentDao, mockSoftRegionDao)
-		ss.GetSeq(ginCtx)
+		ss.HttpGetSeq(ginCtx)
 	})
 }

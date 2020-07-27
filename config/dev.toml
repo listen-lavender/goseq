@@ -4,7 +4,8 @@
     mode = "dev"
     debug = false
 
-[httpserver]
+[server]
+    grpc = true
     host = "0.0.0.0:8091"
 
 [mongo_seq]

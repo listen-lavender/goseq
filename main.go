@@ -8,6 +8,8 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/gin-gonic/gin"
+	"github.com/listen-lavender/goseq/app"
+	appgrpc "github.com/listen-lavender/goseq/app/grpc"
 	apphttp "github.com/listen-lavender/goseq/app/http"
 	"github.com/listen-lavender/goseq/conn/db"
 	"github.com/listen-lavender/goseq/conn/memory"
@@ -17,7 +19,7 @@ import (
 
 type Config struct {
 	App        App
-	HttpServer HttpServer
+	Server     Server
 	SeqStorage Mongo `toml:"mongo_seq"`
 }
 
@@ -27,8 +29,9 @@ type App struct {
 	Debug bool
 }
 
-type HttpServer struct {
+type Server struct {
 	Host string
+	Grpc bool
 }
 
 type Mongo struct {
@@ -112,14 +115,18 @@ func main() {
 	seqHandler := dao.NewSeqHandler(seqmemory, softRegionHandler, softSegmentHandler)
 
 	seqService := sSeq.NewSeqService(seqHandler, softSegmentHandler, softRegionHandler)
-	engine := gin.Default()
 
 	// 性能分析 - 正式环境不要使用！！！
 	//pprof.Register(engine)
-	httpServer := apphttp.NewHttpServer(engine,
-		seqService)
+	var server app.Server
+	if config.Server.Grpc {
+		server = appgrpc.NewGrpcServer(seqService)
+	} else {
+		engine := gin.Default()
+		server = apphttp.NewHttpServer(engine,
+			seqService)
+	}
 
 	// 设置路由
-	httpServer.Init()
-	httpServer.Run(config.HttpServer.Host)
+	server.Run(config.Server.Host)
 }
