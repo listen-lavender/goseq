@@ -1,0 +1,17 @@
+# this is a toml document. boom
+[app]
+    name = "seq"
+    mode = "dev"
+    debug = false
+
+[httpserver]
+    host = "0.0.0.0:8091"
+
+[mongo_seq]
+    addr = "mongodb://127.0.0.1:27017/admin"
+    authdb = "cloudim"
+    authuser = "user"
+    authpass = "123456"
+    db = "cloudim"
+    readtimeout = "5000ms"
+    writetimeout = "5s"
