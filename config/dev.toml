@@ -10,9 +10,9 @@
 
 [mongo_seq]
     addr = "mongodb://127.0.0.1:27017/admin"
-    authdb = "cloudim"
+    authdb = "workchat"
     authuser = "user"
     authpass = "123456"
-    db = "cloudim"
+    db = "workchat"
     readtimeout = "5000ms"
     writetimeout = "5s"
