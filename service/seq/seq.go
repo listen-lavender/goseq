@@ -26,15 +26,15 @@ func NewSeqService(seqDao model.SeqDao, softSegmentDao model.SoftSegmentDao, sof
 }
 
 // 获取
-func (ss *SeqService) GetSeq(ctx context.Context, req *pbseq.GetSeqReq) (*pbseq.GetSeqRes, error) {
+func (ss *SeqService) GetSeq(ctx context.Context, req *pbseq.GetSeqReq) (*pbseq.GetSeqResp, error) {
 	regionID := ss.softRegionDao.GetSet(ctx, req.Namespace)
 	seq := ss.seqDao.AtomicInc(ctx, req.Namespace)
 	_, _, err := ss.softSegmentDao.CAS(ctx, regionID, seq)
 
-	var res *pbseq.GetSeqRes
+	var res *pbseq.GetSeqResp
 
 	if err == nil {
-		res = &pbseq.GetSeqRes{
+		res = &pbseq.GetSeqResp{
 			Namespace: req.Namespace,
 			Seq:       seq,
 			Ts:        time.Now().Unix(),
@@ -52,16 +52,16 @@ func (ss *SeqService) HttpGetSeq(ctx *gin.Context) {
 	seq := ss.seqDao.AtomicInc(ctx, req.NS)
 	_, _, err := ss.softSegmentDao.CAS(ctx, regionID, seq)
 
-	var res *api.SeqRes
+	var res *api.SeqResp
 
 	if err == nil {
-		res = &api.SeqRes{
+		res = &api.SeqResp{
 			NS:  req.NS,
 			Seq: seq,
 			TS:  time.Now().Unix(),
 		}
 	} else {
-		res = &api.SeqRes{
+		res = &api.SeqResp{
 			ErrCode: api.ErrSystemErrorCode,
 			Msg:     api.ErrSystemErrorMsg,
 		}

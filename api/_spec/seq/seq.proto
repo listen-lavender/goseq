@@ -6,13 +6,13 @@ import "google/api/annotations.proto";
 import "protoc-gen-swagger/options/annotations.proto";
 
 service SeqService {
-    rpc GetSeq(GetSeqReq) returns (GetSeqRes);
+    rpc GetSeq(GetSeqReq) returns (GetSeqResp);
 }
 
 message GetSeqReq{
     string namespace =1;
 }
-message GetSeqRes{
+message GetSeqResp{
     string namespace =1;
 	uint64 seq =2;
     int64 ts =3;

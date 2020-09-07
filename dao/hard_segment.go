@@ -26,6 +26,9 @@ func (hsh *hardSegmentHandler) StoreID() string {
 
 func (hsh *hardSegmentHandler) AtomicAdd(ctx context.Context, o *model.HardSegment) (*model.HardSegment, error) {
 	_, err := hsh.client.Collection(hsh.StoreID()).InsertOne(ctx, o)
+	if err != nil {
+		println("===== add segment", err.Error())
+	}
 	return o, err
 }
 
@@ -43,6 +46,10 @@ func (hsh *hardSegmentHandler) AtomicUpdate(ctx context.Context, uType string, i
 	}
 
 	err := hsh.client.Collection(hsh.StoreID()).FindOneAndUpdate(ctx, cond, bson.M{"$set": doc}, &opt).Decode(o)
+
+	if err != nil {
+		println("===== update segment", err.Error())
+	}
 
 	return o, err
 }

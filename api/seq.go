@@ -4,7 +4,7 @@ type SeqReq struct {
 	NS string `json:"-"`
 }
 
-type SeqRes struct {
+type SeqResp struct {
 	NS      string `json:"id"`
 	Seq     uint64 `json:"seq"`
 	TS      int64  `json:"ts"`
